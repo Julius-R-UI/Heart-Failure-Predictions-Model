@@ -300,39 +300,43 @@ var Dataset = tf.tensor([
     [45, 0, 2413, 0, 38, 0, 140000, 1.4, 140, 1, 1, 280, 0],
     [50, 0, 196, 0, 45, 0, 395000, 1.6, 136, 1, 1, 285, 0],
 ])
-
-
+function mean_normalization(theta){
+    var numerator = tf.sub(theta, theta.mean())
+    var denominator = tf.sub(theta.max(), theta.min())
+    var mean_normalised_tensor = tf.div(numerator, denominator)
+    return mean_normalised_tensor
+}
 
 var x = Dataset.slice([0, 0], [-1, 12])
 console.log(x.shape)
 
 var age = x.slice([0, 0], [-1, 1])
-age = age.div(tf.mean(age))
+age = mean_normalization(age)
 
 
 var anaemia = x.slice([0, 1], [-1, 1])
 //anaemia = tf.div(tf.mean(anaemia))
 
 var creatinine_phosphokinase = Dataset.slice([0, 2], [-1, 1])
-creatinine_phosphokinase = creatinine_phosphokinase.div(tf.mean(creatinine_phosphokinase))
+creatinine_phosphokinase = mean_normalization(creatinine_phosphokinase)
 
 var diabetes = Dataset.slice([0, 3], [-1, 1])
 //diabetes = diabetes.div(tf.mean(diabetes))
 
 var ejection_fraction = Dataset.slice([0, 4], [-1, 1])
-ejection_fraction = ejection_fraction.div(tf.mean(ejection_fraction))
+ejection_fraction = mean_normalization(ejection_fraction)
 
 var high_blood_pressure = Dataset.slice([0, 5], [-1, 1])
 //high_blood_pressure = tf.div(tf.mean(high_blood_pressure))
 
 var platelets = Dataset.slice([0, 6], [-1, 1])
-platelets = platelets.div(tf.mean(platelets))
+platelets = mean_normalization(platelets)
 
 var serum_creatinine = Dataset.slice([0, 7], [-1, 1])
-serum_creatinine = serum_creatinine.div(tf.mean(serum_creatinine))
+serum_creatinine = mean_normalization(serum_creatinine)
 
 var serum_sodium = Dataset.slice([0, 8], [-1, 1])
-serum_sodium = serum_sodium.div(tf.mean(serum_sodium))
+serum_sodium = mean_normalization(serum_sodium)
 
 var sex = Dataset.slice([0, 9], [-1, 1])
 //sex = tf.div(tf.mean(sex))
@@ -341,8 +345,8 @@ var smoking = Dataset.slice([0, 10], [-1, 1])
 //smoking = tf.div(tf.mean(smoking))
 
 var time = Dataset.slice([0, 11], [-1, 1])
-time = time.div(tf.mean(time))
-
+time = mean_normalization(time)
+x.print()
 
 var theta = tf.tensor([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
 var i;
@@ -354,7 +358,7 @@ for (i = 0; i < x.shape[0]; i++) {
     theta = tf.concat([theta,x_u])
 }
 x = theta.slice([1, 0], [-1, 12])
-
+x.print()
 
 var y = Dataset.slice([0, 12], [-1, 1])
 //y = y.cast('int32').reshape([-1]).oneHot(2)
@@ -393,3 +397,4 @@ model.fit(x, y, {
     var predictions = model.predict(x)
     predictions.print()
 });
+
